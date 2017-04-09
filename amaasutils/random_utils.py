@@ -7,11 +7,12 @@ import random
 import string
 
 
-def random_string(length):
+def random_string(length, numeric_only=False):
     """
     Generates a random string of length equal to the length parameter
     """
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
+    choices = string.digits if numeric_only else string.ascii_uppercase + string.digits
+    return ''.join(random.choice(choices) for _ in range(length))
 
 
 def random_decimal():

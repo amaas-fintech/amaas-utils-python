@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from datetime import date
 from decimal import Decimal
+import string
 import unittest
 
 from amaasutils.random_utils import random_string, random_decimal, random_date
@@ -14,6 +15,9 @@ class RandomUtilsTest(unittest.TestCase):
         self.assertEqual(len(test_string), 6)
         test_string = random_string(8)
         self.assertEqual(len(test_string), 8)
+        test_string = random_string(8, numeric_only=True)
+        non_numeric = [letter for letter in test_string if letter not in string.digits]
+        self.assertEqual(non_numeric, [])
 
     def test_RandomDate(self):
         test_date = random_date(start_year=2005, end_year=2005)
