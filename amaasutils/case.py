@@ -9,7 +9,7 @@ def dict_camel_to_snake_case(camel_dict, convert_keys=True, convert_subkeys=Fals
     Recursively convert camelCased keys for a camelCased dict into snake_cased keys
 
     :param camel_dict: Dictionary to convert
-    :paran convert_keys: Whether the key should be converted
+    :param convert_keys: Whether the key should be converted
     :param convert_subkeys: Whether to also convert the subkeys, in case they are named properties of the dict
     :return:
     """
