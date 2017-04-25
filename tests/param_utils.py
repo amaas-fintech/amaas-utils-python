@@ -12,6 +12,7 @@ class ParamUtilsTest(unittest.TestCase):
         self.maxDiff = None
         self.search_params = {'single': 'a_string', 'multiple': 'many,strings,in,a,row',
                               'single_int': '123', 'multiple_ints': '1,2,3',
+                              'multiple_dates': '2015-3-3,2015-3-4',
                               'boolean': 'true', 'datetime': '2015-3-03 13:00'}
 
     def test_StrToBook(self):
@@ -37,6 +38,9 @@ class ParamUtilsTest(unittest.TestCase):
         multiple_int_results = param_to_array(param_name='multiple_ints', search_params=self.search_params,
                                               value_type=int)
         self.assertEqual(multiple_int_results, [1, 2, 3])
+        multiple_date_results = param_to_array(param_name='multiple_dates', search_params=self.search_params,
+                                               value_type=date)
+        self.assertEqual(multiple_date_results, [date(2015, 3, 3), date(2015, 3, 4)])
 
     def test_ParamToArrayMissing(self):
         result = param_to_array(param_name='missing', search_params=self.search_params)

@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from dateutil.parser import parse
 
 
@@ -10,6 +11,9 @@ def param_to_array(param_name, search_params, value_type=str):
         return [value_type(value) for value in values]
     elif value_type == bool:
         return [str_to_bool(value) for value in values]
+    elif value_type in [date, datetime]:
+        datetimes = [parse(value) for value in values]
+        return [value.date() for value in datetimes] if value_type == date else datetimes
 
 
 def param_to_boolean(param_name, search_params):
