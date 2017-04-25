@@ -22,6 +22,8 @@ def param_to_boolean(param_name, search_params):
 
 
 def str_to_bool(param):
+    if param is None:
+        return None
     if param.upper() == 'TRUE':
         return True
     if param.upper() == 'FALSE':

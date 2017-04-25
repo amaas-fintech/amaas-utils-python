@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
 requires = [
-
+    'python-dateutil'
 ]
 
 setup(
     name='amaasutils',
-    version='1.1.0',
+    version='1.1.1',
     description='Asset Management as a Service - Utils',
     license='Apache License 2.0',
     url='https://github.com/amaas-fintech/amaas-utils-python',
@@ -24,5 +24,3 @@ setup(
     packages=find_packages(exclude=['tests']),  # Very annoying that this doesnt work - I have to include a MANIFEST
     install_requires=requires,
 )
-
-
