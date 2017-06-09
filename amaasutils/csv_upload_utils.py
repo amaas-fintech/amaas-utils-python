@@ -1,38 +1,8 @@
-#This file contains the essential function and methods to parse the csv file
-#Some of the functions are helper functions
-#Some of the processing function is for csv upload and download functions
-#Information are contained in lists and dictionaries
-#Check function usages by docstrings
-#generic uploader depends heavily on amaasclass, must included in csv header and rows
-#boolean strings will be converted to True or False
-"""
-example csv header and row values: (take note of children fields header format)
-amaasclass,asset_id,links.link1.0.linked_asset_id,links.link1.0.active
-Equity,12345,54321,true
-"""
 import csv
 from datetime import date, datetime
 from dateutil.parser import parse
 from decimal import Decimal
 
-from amaascore.tools.csv_tools import csv_stream_to_objects
-from amaasutils.logging_utils import DEFAULT_LOGGING
-
-from amaascore.assets.interface import AssetsInterface
-from amaascore.parties.interface import PartiesInterface
-from amaascore.books.interface import BooksInterface
-from amaascore.corporate_actions.interface import CorporateActionsInterface
-from amaascore.market_data.interface import MarketDataInterface
-from amaascore.transactions.interface import TransactionsInterface
-from amaascore.asset_managers.interface import AssetManagersInterface
-
-from amaascore import parties
-from amaascore import assets
-from amaascore import transactions
-
-from amaascore.assets.children import Link, Reference
-from amaascore.parties.children import Address, Email, Link, Reference, Comment
-from amaascore.transactions.children import Charge, Code, Comment, Link, Party, Reference
 
 #lists to dicide which a particular class belong to
 ASSET = ['Asset', 'Automobile', 'BondFutureOption', 'BondFuture', 'BondOption', 'Bond', 'ContractForDifference', 'Currency', 'CustomAsset', 
@@ -46,16 +16,6 @@ MARKET_DATA = ['EODPrice', 'FXRate', 'Quote']
 TRANSACTION = ['Transaction']
 ASSET_MANAGER = ['AssetManager', 'Relationship']
 #children_class dictionary director for different classes
-CHILDREN_CLASS = {'asset': {'links': assets.children.Link, 'references': assets.children.Reference},
-                  'party': {'addresses': parties.children.Address, 'emails': parties.children.Email,
-                            'links': parties.children.Link, 'references': parties.children.Reference,
-                            'comments': parties.children.Comment},
-                  'transaction': {'charges': transactions.children.Charge, 'codes': transactions.children.Code,
-                                  'comments': transactions.children.Comment, 'links': transactions.children.Link,
-                                  'references': transactions.children.Reference, 'parties': transactions.children.Party},
-                  'asset_manager': {},
-                  'book': {},
-                  'corporate_action': {'references': assets.children.Reference}} #no Reference class found in corporate_actions
 #chiildren fields names that signal children fields
 CHILDREN_SIGNAL = {'references', 'addresses', 'emails', 'comments', 'charges', 'codes', 'parties'}
 #parameters datatypes:
@@ -89,49 +49,6 @@ DATE_PARAMS = {'issue_date', 'maturity_date', 'declared_date', 'record_date', 's
 DATETIME_PARAMS = {'created_time', 'updated_time', 'default_book_close_time', 'close_time',
                    'valid_from', 'valid_to', 'execution_time'}
 JSON_PARAMS = {'additional', 'client_additional'}
-
-def direct_to_class(amaasclass):
-    """direct from amaasclass (first params given in the row) to the dictionary of the children class"""
-    if amaasclass in ASSET:
-        return CHILDREN_CLASS['asset']
-    elif amaasclass in PARTY:
-        return CHILDREN_CLASS['party']
-    elif amaasclass in TRANSACTION:
-        return CHILDREN_CLASS['transaction']
-    elif amaasclass in BOOK:
-        return CHILDREN_CLASS['book']
-    elif amaasclass in CORPORATE_ACTION:
-        return CHILDREN_CLASS['corporate_action']
-    elif amaasclass in MARKET_DATA:
-        return None #None for now
-    else:
-        return CHILDREN_CLASS['asset_manager']
-
-def interface_direct_class(data_class):
-    """help to direct to the correct interface interacting with DB by class name only"""
-    if data_class in ASSET:
-        interface = AssetsInterface()
-    elif data_class in PARTY:
-        interface = PartiesInterface()
-    elif data_class in BOOK:
-        interface = BooksInterface()
-    elif data_class in CORPORATE_ACTION:
-        interface = CorporateActionsInterface()
-    elif data_class in MARKET_DATA:
-        interface = MarketDataInterface()
-    elif data_class in TRANSACTION:
-        interface = TransactionsInterface()
-    else:
-        interface = AssetManagersInterface()
-    return interface
-
-def interface_direct_csvpath(csvpath):
-    """help to direct to the correct interface interacting with DB by csvfile path"""
-    with open(csvpath) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            data_class = row.pop('amaasclass', '')
-            return interface_direct_class(data_class)
 
 def formatted_string_to_links(links_input, clazz):
     """
@@ -328,22 +245,3 @@ def group_raw_to_formatted_string_dict(raw_dict):
         else:
             cooked_dict[header] = value
     return cooked_dict
-
-def process_normal(_dict):
-    """
-    this method process the _dict to correct dict to be called by class constructor
-    this method will be imported and called by main csv uploader function
-    """
-    cooked_dict = group_raw_to_formatted_string_dict(_dict)
-    data_class = cooked_dict.pop('amaasclass', '')
-    children_class_dict = direct_to_class(data_class)
-    tasty_dict = dict()
-    for cooked_key, cooked_value in cooked_dict.items():
-        if cooked_key in CHILDREN_SIGNAL:
-            processed_dict = {cooked_key: formatted_string_to_others(cooked_value, children_class_dict[cooked_key])}
-        elif cooked_key == 'links':
-            processed_dict = {cooked_key: formatted_string_to_links(cooked_value, children_class_dict[cooked_key])}
-        else:
-            processed_dict = {cooked_key: process_value_with_header(cooked_key, cooked_value)}
-        tasty_dict.update(processed_dict)
-    return tasty_dict
