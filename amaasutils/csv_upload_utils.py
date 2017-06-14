@@ -62,7 +62,7 @@ def formatted_string_to_links(links_input, clazz):
         links_input = links_input.split('{', 1)[1]
         key=links_input.split(':',1)[0]
         links_input = links_input.split(':',1)[1]
-    link_list = []
+    link_set = set()
     value = links_input.split(']',1)[0][1:]
     if (len(links_input.split('}',1)) != 1):
         links_input = links_input.split(']',1)[1]
@@ -75,7 +75,7 @@ def formatted_string_to_links(links_input, clazz):
         temp_list = temp.split(',')
         for field in temp_list:
             params_dict.update(process_field(field))
-        link_list.append(clazz(**params_dict))
+        link_set.add(clazz(**params_dict))
         params_dict = dict()
         while(value!= '' and value[0:2] == ',{'):
             temp = value.split('}', 1)[0]
@@ -85,14 +85,14 @@ def formatted_string_to_links(links_input, clazz):
             temp_list = temp.split(',')
             for field in temp_list:
                 params_dict.update(process_field(field))
-            link_list.append(clazz(**params_dict))
+            link_set.add(clazz(**params_dict))
             params_dict = dict()
-        links_dict[key] = link_list
+        links_dict[key] = link_set
         if (links_input[0] == ','):
             links_input = links_input[1:]
         else:
             break
-        link_list = []
+        link_set = []
         key = links_input.split(':', 1)[0]
         value = links_input.split(':', 1)[1].split(']', 1)[0][1:]
         links_input = links_input.split(':', 1)[1].split(']', 1)[1]        
