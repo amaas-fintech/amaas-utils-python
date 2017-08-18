@@ -1,6 +1,6 @@
 
-
 currency_quote_convention = {
+    
 'XPT':'XPTUSD',
 'XPD':'XPDUSD',
 'XAU':'XAUUSD',
