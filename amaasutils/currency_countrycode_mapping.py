@@ -148,6 +148,7 @@ currency_countrycode_mapping = {'AED':'ARE',
 'YER':'YEM',
 'ZAR':'ZAF',
 'ZMW':'ZMB',
+'EUR':'EUR'
 }
 
 def currency_to_countrycode(currency):
