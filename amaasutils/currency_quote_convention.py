@@ -181,4 +181,11 @@ currency_quote_convention = {
 }
 
 def get_currency_quote_convention(currency):
-    return currency_quote_convention.get(currency,"None")
+    return currency_quote_convention.get(str(currency).upper(),None)
+
+def check_cross(pair):
+    pair = str(pair).upper()
+    for key, value in currency_quote_convention.items():
+        if value == pair:
+            return False
+    return True
