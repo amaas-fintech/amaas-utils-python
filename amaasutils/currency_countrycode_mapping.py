@@ -46,6 +46,7 @@ currency_countrycode_mapping = {'AED':'ARE',
 'EGP':'EGY',
 'ERN':'ERI',
 'ETB':'ETH',
+'EUR':'EUR',
 'FJD':'FJI',
 'FKP':'FLK',
 'GBP':'GBR',
@@ -147,8 +148,7 @@ currency_countrycode_mapping = {'AED':'ARE',
 'WST':'WSM',
 'YER':'YEM',
 'ZAR':'ZAF',
-'ZMW':'ZMB',
-'EUR':'EUR'
+'ZMW':'ZMB'
 }
 
 def currency_to_countrycode(currency):
