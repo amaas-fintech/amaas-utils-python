@@ -29,7 +29,8 @@ def _flatten_dict(dict_key, dict_value):
     for key, value in dict_value.items():
         if isinstance(value, dict):
             dict_values = _flatten_dict('{}.{}'.format(dict_key, key), value)
-            results = {**results, **dict_values}
+            # results = {**results, **dict_values}
+            results.update(dict_values)
         else:
             results['{}.{}'.format(dict_key, key)] = value
     return results

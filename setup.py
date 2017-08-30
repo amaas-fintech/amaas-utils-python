@@ -6,7 +6,7 @@ requires = [
 
 setup(
     name='amaasutils',
-    version='1.2.7',
+    version='1.2.8',
     description='Asset Management as a Service - Utils',
     license='Apache License 2.0',
     url='https://github.com/amaas-fintech/amaas-utils-python',
