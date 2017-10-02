@@ -16,12 +16,12 @@ def param_to_array(param_name, search_params, value_type=str):
         return [value.date() for value in datetimes] if value_type == date else datetimes
 
 
-def param_to_boolean(param_name, search_params):
+def param_to_boolean(param_name, search_params, default=None):
     if search_params is None:
-        return None
+        return default
     param = search_params.get(param_name, None)
     if param is None:
-        return None
+        return default
     return str_to_bool(param)
 
 
