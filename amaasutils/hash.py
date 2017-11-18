@@ -18,5 +18,6 @@ def _convert(dictionary, ignored_attributes=None):
             dictionary[key] = _convert(value, ignored_attributes)
         elif isinstance(value, list) or isinstance(value, set):
             dictionary[key] = tuple(sorted([_convert(v, ignored_attributes)
-                                            if isinstance(v, dict) else v for v in value]))
+                                            if isinstance(v, dict) else v
+                                            for v in value if v is not None]))
     return tuple(sorted([(k, str(v)) for k, v in dictionary.items()]))
